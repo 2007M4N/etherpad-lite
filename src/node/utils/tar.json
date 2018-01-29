@@ -2,6 +2,7 @@
   "pad.js": [
     "pad.js"
   , "pad_utils.js"
+  , "browser.js"
   , "pad_cookie.js"
   , "pad_editor.js"
   , "pad_editbar.js"
@@ -14,6 +15,8 @@
   , "pad_savedrevs.js"
   , "pad_connectionstatus.js"
   , "chat.js"
+  , "gritter.js"
+  , "$tinycon/tinycon.js"
   , "excanvas.js"
   , "farbtastic.js"
   ]
@@ -22,6 +25,7 @@
   , "colorutils.js"
   , "draggable.js"
   , "pad_utils.js"
+  , "browser.js"
   , "pad_cookie.js"
   , "pad_editor.js"
   , "pad_editbar.js"
@@ -40,14 +44,15 @@
   ]
 , "ace2_inner.js": [
     "ace2_inner.js"
+  , "browser.js"
   , "AttributePool.js"
   , "Changeset.js"
   , "ChangesetUtils.js"
   , "skiplist.js"
-  , "virtual_lines.js"
   , "cssmanager.js"
   , "colorutils.js"
   , "undomodule.js"
+  , "$unorm.js"
   , "contentcollector.js"
   , "changesettracker.js"
   , "linestylefilter.js"
@@ -56,14 +61,19 @@
   ]
 , "ace2_common.js": [
     "ace2_common.js"
+  , "browser.js"
   , "jquery.js"
   , "rjquery.js"
+  , "$async.js"
+  , "$async/lib/async.js"
   , "underscore.js"
+  , "$underscore.js"
+  , "$underscore/underscore.js"
   , "security.js"
+  , "$security.js"
   , "json2.js"
-  , "pluginfw/plugins.js"
+  , "pluginfw/client_plugins.js"
+  , "pluginfw/shared.js"
   , "pluginfw/hooks.js"
-  , "pluginfw/async.js"
-  , "pluginfw/parent_require.js"
   ]
 }

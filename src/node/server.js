@@ -21,31 +21,58 @@
  * limitations under the License.
  */
 
-var log4js = require('log4js');
-var settings = require('./utils/Settings');
-var db = require('./db/DB');
-var async = require('async');
-var plugins = require("ep_etherpad-lite/static/js/pluginfw/plugins");
-var hooks = require("ep_etherpad-lite/static/js/pluginfw/hooks");
+var log4js = require('log4js')
+  , async = require('async')
+  , stats = require('./stats');
+
+log4js.replaceConsole();
+
+stats.gauge('memoryUsage', function() {
+  return process.memoryUsage().rss
+})
+
+var settings
+  , db
+  , plugins
+  , hooks;
 var npm = require("npm/lib/npm.js");
 
-
-//set loglevel
-log4js.setGlobalLogLevel(settings.loglevel);
-
 async.waterfall([
+  // load npm
+  function(callback) {
+    npm.load({}, function(er) {
+      callback(er)
+    })
+  },
+  
+  // load everything
+  function(callback) {
+    settings = require('./utils/Settings');
+    db = require('./db/DB');
+    plugins = require("ep_etherpad-lite/static/js/pluginfw/plugins");
+    hooks = require("ep_etherpad-lite/static/js/pluginfw/hooks");
+    hooks.plugins = plugins;
+    callback();
+  },
+  
   //initalize the database
   function (callback)
   {
     db.init(callback);
   },
 
-  plugins.update,
+  function(callback) {
+    plugins.update(callback)
+  },
 
   function (callback) {
-    console.info("Installed plugins: " + plugins.formatPlugins());
+    console.info("Installed plugins: " + plugins.formatPluginsWithVersion());
     console.debug("Installed parts:\n" + plugins.formatParts());
     console.debug("Installed hooks:\n" + plugins.formatHooks());
+
+    // Call loadSettings hook
+    hooks.aCallAll("loadSettings", { settings: settings });
+
     callback();
   },
 
@@ -53,6 +80,22 @@ async.waterfall([
   function (callback)
   {
     hooks.callAll("createServer", {});
-    callback(null);  
+
+    // Create minified files
+    var minify = require('./utils/Minify');
+
+    minify.getFileCompressed("js/ace.js", "text/javascript", function(){
+      callback(null);
+    });
+    /*
+    minify.getFileCompressed("js/require-kernel.js", "text/javascript", function(){
+      callback(null);
+    });
+    */
+    minify.getFileCompressed("css/pad.css", "text/css", function(){
+      callback(null);
+    });
+
   }
+
 ]);
